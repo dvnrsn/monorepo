@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     remix({
       ignoredRouteFiles: ["**/.*"],
-      appDirectory: spaMode ? './spa' : './src/app',
+      appDirectory: spaMode ? './spa' : './app',
       ssr: !spaMode,
       future: {
         unstable_singleFetch: false
