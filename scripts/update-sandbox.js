@@ -2,9 +2,21 @@
 
 import { writeFile } from 'fs';
 
-export {};
+const importJson = async (/** @type {string} */ path) => {
+  try {
+    return await import(path, { assert: { type: 'json' } });
+  } catch (err) {
+    // @ts-ignore
+    if (err.code === 'ERR_IMPORT_ATTRIBUTE_MISSING') {
+      return await import(path, { with: { type: 'json' } });
+    } else {
+      console.error('💥 Error occured:', '\n\n', err);
+      process.exit(1);
+    }
+  }
+};
 
-const sandboxPackageJson = await import('../playground/package.json', { with: { type: 'json' } });
+const sandboxPackageJson = await importJson('../playground/package.json');
 const deps = sandboxPackageJson.default.dependencies;
 const devDeps = sandboxPackageJson.default.devDependencies;
 
@@ -28,7 +40,7 @@ Object.keys(devDeps).forEach(dep => {
 await Promise.allSettled(remixPwaPackages.map(async pkg => {
   const pkgPath = pkg.replace('@remix-pwa/', '');
 
-  const pkgJson = await import(`../packages/${pkgPath}/package.json`, { with: { type: 'json' } });
+  const pkgJson = await importJson(`../packages/${pkgPath}/package.json`);
 
   // @ts-ignore
   if (deps[pkg]) {

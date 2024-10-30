@@ -23,7 +23,7 @@
     "lint-staged": "lint-staged",
     "lint": "turbo lint -- --fix",
     "format": "turbo format -- --write",
-    "postclone": "npm install && npm run test && npm run build",
+    "postclone": "npm run preinstall -w @remix-pwa/playground && npm install && npm run test && npm run build",
     "publish:pr": "npx pkg-pr-new publish './packages/*'",
     "test": "turbo test -- --coverage"
   },
