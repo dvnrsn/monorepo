@@ -1,3 +1,15 @@
+# @remix-pwa/dev 4.0.0-dev.1 (2024-11-05)
+
+
+### Bug Fixes
+
+* **dev:** added funding info 6f9325b
+
+
+### BREAKING CHANGES
+
+* **dev:** Testing this sht out
+
 # @remix-pwa/dev 3.2.0-dev.2 (2024-10-11)
 
 
