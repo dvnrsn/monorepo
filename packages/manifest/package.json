@@ -7,10 +7,20 @@
     "url": "git+ssh://git@github.com/remix-pwa/monorepo.git",
     "directory": "packages/manifest"
   },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "default": "./dist/index.js",
-      "types": "./types/index.d.ts"
+      "types": "./dist/index.d.ts"
+    },
+    "./manifest-link": {
+      "default": "./dist/src/ManifestLink.js",
+      "types": "./dist/src/ManifestLink.d.ts"
+    },
+    "./types": {
+      "default": "./dist/src/types.js",
+      "types": "./dist/src/types.d.ts"
     },
     "./schema.json": {
       "default": "./schema.json"
@@ -22,8 +32,9 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "funding": [
+    "https://github.com/sponsors/ShafSpecs"
+  ],
   "files": [
     "dist/",
     "schema.json",
