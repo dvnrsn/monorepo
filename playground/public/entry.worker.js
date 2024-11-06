@@ -94,18 +94,16 @@ class NavigationHandler extends MessageHandler {
     __publicField$6(this, "denyList");
     __publicField$6(this, "documentCache");
     __publicField$6(this, "logger");
-    this.allowList = e.allowList || [], this.denyList = e.denyList || [], this.documentCache = e.cache, this.logger = e.logger || logger, this.bind(this.handleNavigation.bind(this)), self.addEventListener("install", (e2) => {
-      e2.waitUntil(this.precacheDocuments());
-    });
+    this.allowList = e.allowList || [], this.denyList = e.denyList || [], this.documentCache = e.cache, this.logger = e.logger || logger, this.bind(this.handleNavigation.bind(this));
   }
-  async precacheDocuments() {
+  async _precacheDocuments() {
     try {
       this.logger.log("Precaching documents...");
       const e = [];
       for (const t of e) {
         if (!await this.documentCache.match(t)) {
           const e2 = await fetch(t);
-          e2.ok ? (await this.documentCache.addToCache(t, e2.clone()), this.logger.log(`Precached document: ${t}`)) : this.logger.warn(`Failed to precache document: ${t}`);
+          e2.ok ? (await this.documentCache.addToCache(t, e2.clone()), this.logger.log(`Precached document: ${t} successfully`)) : this.logger.warn(`Failed to precache document: ${t}`);
         }
       }
     } catch (e) {
@@ -4942,6 +4940,7 @@ class PushManager {
     console.error("Notification error:", event);
   }
 }
+self.logger = logger;
 console.log("Hello from service worker!");
 console.log("development", "https://api.example.com", "value");
 const documentCache = new EnhancedCache("document-cache", {
@@ -4972,9 +4971,6 @@ const isAssetRequest = (request) => {
   return self.__workerManifest.assets.includes(url.pathname) && hasNoParams;
 };
 const defaultFetchHandler = async ({ request, context }) => {
-  const req = context.event.request;
-  req.referrer;
-  req.headers.get("X-Route-Id");
   if (isAssetRequest(request)) {
     return assetCache.handleRequest(request);
   }
@@ -5029,165 +5025,49 @@ const route0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: worker_runtime_default$2
 }, Symbol.toStringTag, { value: "Module" }));
-var __getOwnPropNames$1 = Object.getOwnPropertyNames;
-var __esm$1 = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames$1(fn)[0]])(fn = 0)), res;
-};
-var __commonJS$1 = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames$1(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
-var init_define_process_env$1 = __esm$1({
-  "<define:process.env>"() {
+const workerAction$2 = async ({ context }) => {
+  const { fetchFromServer } = context;
+  console.log("Worker action called");
+  try {
+    const response = await fetchFromServer();
+    console.log(Object.fromEntries(response.headers.entries()));
+  } catch (error) {
+    console.error(error);
   }
-});
-var require_worker_runtime$1 = __commonJS$1({
-  "@remix-pwa/worker-runtime"(exports, module) {
-    init_define_process_env$1();
-    module.exports = {};
-  }
-});
-var worker_runtime_default$1 = require_worker_runtime$1();
+  return new Response(JSON.stringify({
+    message: "Modified action response, Remix Actions are quite out of the picture here"
+  }), {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+};
 const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: worker_runtime_default$1
+  workerAction: workerAction$2
 }, Symbol.toStringTag, { value: "Module" }));
-const workerLoader$2 = () => {
-  console.log("Worker loader called in logout");
-  return null;
-};
-const workerAction$1 = () => {
-  console.log("Worker action called in logout");
-  return null;
-};
+async function workerLoader$3({ context }) {
+  const { fetchFromServer } = context;
+  const message = await Promise.race([
+    fetchFromServer().then((response) => response.json()).then(({ message: message2 }) => message2).catch(() => new Promise((resolve) => setTimeout(() => resolve(null), 5e3))),
+    // utilizing a slower one even when cached
+    new Promise((resolve) => setTimeout(resolve, 500, "Hello World!\n\n• This message is sent to you from the client 😜 (Edited, again ---)!"))
+  ]);
+  return new Response(
+    JSON.stringify({
+      message
+    }),
+    {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  );
+}
 const route2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  workerAction: workerAction$1,
-  workerLoader: workerLoader$2
+  workerLoader: workerLoader$3
 }, Symbol.toStringTag, { value: "Module" }));
-const workerLoader$1 = ({ request }) => {
-  console.log("Worker loader called in index", request.url);
-  return null;
-};
-const workerAction = ({ request }) => {
-  console.log("Worker action called in index", request.url);
-  return null;
-};
-const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  workerAction,
-  workerLoader: workerLoader$1
-}, Symbol.toStringTag, { value: "Module" }));
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-};
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
-var init_define_process_env = __esm({
-  "<define:process.env>"() {
-  }
-});
-var require_worker_runtime = __commonJS({
-  "@remix-pwa/worker-runtime"(exports, module) {
-    init_define_process_env();
-    module.exports = {};
-  }
-});
-var worker_runtime_default = require_worker_runtime();
-const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  default: worker_runtime_default
-}, Symbol.toStringTag, { value: "Module" }));
-const workerLoader = async () => {
-  console.log("worker loader in test");
-  return null;
-};
-const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  workerLoader
-}, Symbol.toStringTag, { value: "Module" }));
-const assets = [
-  "/entry.worker.css",
-  "/entry.worker.js",
-  "/favicon.ico",
-  "/manifest.json"
-];
-const routes = {
-  "root": {
-    id: "root",
-    parentId: void 0,
-    path: "",
-    index: void 0,
-    caseSensitive: void 0,
-    hasClientLoader: false,
-    hasClientAction: false,
-    hasWorkerLoader: false,
-    hasWorkerAction: false,
-    module: route0
-  },
-  "routes/eat.$red": {
-    id: "routes/eat.$red",
-    parentId: "root",
-    path: "eat/:red",
-    index: void 0,
-    caseSensitive: void 0,
-    hasClientLoader: false,
-    hasClientAction: false,
-    hasWorkerLoader: false,
-    hasWorkerAction: false,
-    module: route1
-  },
-  "routes/logout": {
-    id: "routes/logout",
-    parentId: "root",
-    path: "logout",
-    index: void 0,
-    caseSensitive: void 0,
-    hasClientLoader: true,
-    hasClientAction: true,
-    hasWorkerLoader: true,
-    hasWorkerAction: true,
-    module: route2
-  },
-  "routes/_index": {
-    id: "routes/_index",
-    parentId: "root",
-    path: void 0,
-    index: true,
-    caseSensitive: void 0,
-    hasClientLoader: false,
-    hasClientAction: true,
-    hasWorkerLoader: true,
-    hasWorkerAction: true,
-    module: route3
-  },
-  "routes/smthg": {
-    id: "routes/smthg",
-    parentId: "root",
-    path: "smthg",
-    index: void 0,
-    caseSensitive: void 0,
-    hasClientLoader: false,
-    hasClientAction: false,
-    hasWorkerLoader: false,
-    hasWorkerAction: false,
-    module: route4
-  },
-  "routes/test": {
-    id: "routes/test",
-    parentId: "root",
-    path: "test",
-    index: void 0,
-    caseSensitive: void 0,
-    hasClientLoader: true,
-    hasClientAction: false,
-    hasWorkerLoader: true,
-    hasWorkerAction: false,
-    module: route5
-  }
-};
-const entry = { module: entryWorker };
 /**
  * @remix-run/router v1.19.2
  *
@@ -5198,12 +5078,31 @@ const entry = { module: entryWorker };
  *
  * @license MIT
  */
+function _extends() {
+  _extends = Object.assign ? Object.assign.bind() : function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends.apply(this, arguments);
+}
 var Action;
 (function(Action2) {
   Action2["Pop"] = "POP";
   Action2["Push"] = "PUSH";
   Action2["Replace"] = "REPLACE";
 })(Action || (Action = {}));
+function invariant(value, message) {
+  if (value === false || value === null || typeof value === "undefined") {
+    throw new Error(message);
+  }
+}
 function warning(cond, message) {
   if (!cond) {
     if (typeof console !== "undefined") console.warn(message);
@@ -5287,6 +5186,176 @@ function compilePath(path, caseSensitive, end) {
   let matcher = new RegExp(regexpSource, caseSensitive ? void 0 : "i");
   return [matcher, params];
 }
+const json$1 = function json(data, init) {
+  if (init === void 0) {
+    init = {};
+  }
+  let responseInit = typeof init === "number" ? {
+    status: init
+  } : init;
+  let headers = new Headers(responseInit.headers);
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json; charset=utf-8");
+  }
+  return new Response(JSON.stringify(data), _extends({}, responseInit, {
+    headers
+  }));
+};
+class AbortedDeferredError extends Error {
+}
+class DeferredData {
+  constructor(data, responseInit) {
+    this.pendingKeysSet = /* @__PURE__ */ new Set();
+    this.subscribers = /* @__PURE__ */ new Set();
+    this.deferredKeys = [];
+    invariant(data && typeof data === "object" && !Array.isArray(data), "defer() only accepts plain objects");
+    let reject;
+    this.abortPromise = new Promise((_, r) => reject = r);
+    this.controller = new AbortController();
+    let onAbort = () => reject(new AbortedDeferredError("Deferred data aborted"));
+    this.unlistenAbortSignal = () => this.controller.signal.removeEventListener("abort", onAbort);
+    this.controller.signal.addEventListener("abort", onAbort);
+    this.data = Object.entries(data).reduce((acc, _ref2) => {
+      let [key, value] = _ref2;
+      return Object.assign(acc, {
+        [key]: this.trackPromise(key, value)
+      });
+    }, {});
+    if (this.done) {
+      this.unlistenAbortSignal();
+    }
+    this.init = responseInit;
+  }
+  trackPromise(key, value) {
+    if (!(value instanceof Promise)) {
+      return value;
+    }
+    this.deferredKeys.push(key);
+    this.pendingKeysSet.add(key);
+    let promise = Promise.race([value, this.abortPromise]).then((data) => this.onSettle(promise, key, void 0, data), (error) => this.onSettle(promise, key, error));
+    promise.catch(() => {
+    });
+    Object.defineProperty(promise, "_tracked", {
+      get: () => true
+    });
+    return promise;
+  }
+  onSettle(promise, key, error, data) {
+    if (this.controller.signal.aborted && error instanceof AbortedDeferredError) {
+      this.unlistenAbortSignal();
+      Object.defineProperty(promise, "_error", {
+        get: () => error
+      });
+      return Promise.reject(error);
+    }
+    this.pendingKeysSet.delete(key);
+    if (this.done) {
+      this.unlistenAbortSignal();
+    }
+    if (error === void 0 && data === void 0) {
+      let undefinedError = new Error('Deferred data for key "' + key + '" resolved/rejected with `undefined`, you must resolve/reject with a value or `null`.');
+      Object.defineProperty(promise, "_error", {
+        get: () => undefinedError
+      });
+      this.emit(false, key);
+      return Promise.reject(undefinedError);
+    }
+    if (data === void 0) {
+      Object.defineProperty(promise, "_error", {
+        get: () => error
+      });
+      this.emit(false, key);
+      return Promise.reject(error);
+    }
+    Object.defineProperty(promise, "_data", {
+      get: () => data
+    });
+    this.emit(false, key);
+    return data;
+  }
+  emit(aborted, settledKey) {
+    this.subscribers.forEach((subscriber) => subscriber(aborted, settledKey));
+  }
+  subscribe(fn) {
+    this.subscribers.add(fn);
+    return () => this.subscribers.delete(fn);
+  }
+  cancel() {
+    this.controller.abort();
+    this.pendingKeysSet.forEach((v, k) => this.pendingKeysSet.delete(k));
+    this.emit(true);
+  }
+  async resolveData(signal) {
+    let aborted = false;
+    if (!this.done) {
+      let onAbort = () => this.cancel();
+      signal.addEventListener("abort", onAbort);
+      aborted = await new Promise((resolve) => {
+        this.subscribe((aborted2) => {
+          signal.removeEventListener("abort", onAbort);
+          if (aborted2 || this.done) {
+            resolve(aborted2);
+          }
+        });
+      });
+    }
+    return aborted;
+  }
+  get done() {
+    return this.pendingKeysSet.size === 0;
+  }
+  get unwrappedData() {
+    invariant(this.data !== null && this.done, "Can only unwrap data on initialized and settled deferreds");
+    return Object.entries(this.data).reduce((acc, _ref3) => {
+      let [key, value] = _ref3;
+      return Object.assign(acc, {
+        [key]: unwrapTrackedPromise(value)
+      });
+    }, {});
+  }
+  get pendingKeys() {
+    return Array.from(this.pendingKeysSet);
+  }
+}
+function isTrackedPromise$1(value) {
+  return value instanceof Promise && value._tracked === true;
+}
+function unwrapTrackedPromise(value) {
+  if (!isTrackedPromise$1(value)) {
+    return value;
+  }
+  if (value._error) {
+    throw value._error;
+  }
+  return value._data;
+}
+const defer = function defer2(data, init) {
+  if (init === void 0) {
+    init = {};
+  }
+  let responseInit = typeof init === "number" ? {
+    status: init
+  } : init;
+  return new DeferredData(data, responseInit);
+};
+const redirect$1 = function redirect(url, init) {
+  if (init === void 0) {
+    init = 302;
+  }
+  let responseInit = init;
+  if (typeof responseInit === "number") {
+    responseInit = {
+      status: responseInit
+    };
+  } else if (typeof responseInit.status === "undefined") {
+    responseInit.status = 302;
+  }
+  let headers = new Headers(responseInit.headers);
+  headers.set("Location", url);
+  return new Response(null, _extends({}, responseInit, {
+    headers
+  }));
+};
 function isRouteErrorResponse(error) {
   return error != null && typeof error.status === "number" && typeof error.statusText === "string" && typeof error.internal === "boolean" && "data" in error;
 }
@@ -5294,6 +5363,267 @@ const validMutationMethodsArr = ["post", "put", "patch", "delete"];
 new Set(validMutationMethodsArr);
 const validRequestMethodsArr = ["get", ...validMutationMethodsArr];
 new Set(validRequestMethodsArr);
+const workerAction$1 = async ({ request, context }) => {
+  const formData = await request.formData();
+  const { database, fetchFromServer } = context;
+  try {
+    fetchFromServer();
+    await database.selections.add(Object.fromEntries(formData.entries()));
+    return redirect$1("/selection");
+  } catch (error) {
+    throw json$1({ message: "Something went wrong", error }, 500);
+  }
+};
+const workerLoader$2 = async ({ context }) => {
+  try {
+    const { fetchFromServer, database } = context;
+    const [serverResult, clientResult] = await Promise.allSettled([
+      // NOTE: If the user decides to use the server loader, must use the `context.event.request` object instead of `request`.
+      // This is because we strip the `_data` and `index` from the request object just to follow what Remix does.
+      fetchFromServer().then((response) => response.json()).then(({ flights: flights2 }) => flights2),
+      database.flights.toArray()
+    ]);
+    const flights = serverResult.value || clientResult.value;
+    if (serverResult.value) {
+      await database.flights.bulkPut(
+        flights.map((f) => ({
+          ...f,
+          flightNumber: `${f.flightNumber.split("-")[0].trim()} - client`
+        }))
+      );
+    }
+    return defer({ flights });
+  } catch (error) {
+    console.error(error);
+    throw json$1({ message: "Something went wrong", error }, 500);
+  }
+};
+const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  workerAction: workerAction$1,
+  workerLoader: workerLoader$2
+}, Symbol.toStringTag, { value: "Module" }));
+async function workerLoader$1({ context }) {
+  const { database } = context;
+  const selections = await database.selections.toArray();
+  return json$1({ selections });
+}
+const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  workerLoader: workerLoader$1
+}, Symbol.toStringTag, { value: "Module" }));
+const workerAction = async ({ context }) => {
+  const { fetchFromServer, event } = context;
+  try {
+    await fetchFromServer();
+  } catch (error) {
+    console.error(error);
+  }
+  return new Response(JSON.stringify({
+    message: "Offline or Online. I shall always respond!"
+  }), {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  });
+};
+const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  workerAction
+}, Symbol.toStringTag, { value: "Module" }));
+var __getOwnPropNames$1 = Object.getOwnPropertyNames;
+var __esm$1 = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames$1(fn)[0]])(fn = 0)), res;
+};
+var __commonJS$1 = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames$1(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var init_define_process_env$1 = __esm$1({
+  "<define:process.env>"() {
+  }
+});
+var require_worker_runtime$1 = __commonJS$1({
+  "@remix-pwa/worker-runtime"(exports, module) {
+    init_define_process_env$1();
+    module.exports = {};
+  }
+});
+var worker_runtime_default$1 = require_worker_runtime$1();
+const route6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: worker_runtime_default$1
+}, Symbol.toStringTag, { value: "Module" }));
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var init_define_process_env = __esm({
+  "<define:process.env>"() {
+  }
+});
+var require_worker_runtime = __commonJS({
+  "@remix-pwa/worker-runtime"(exports, module) {
+    init_define_process_env();
+    module.exports = {};
+  }
+});
+var worker_runtime_default = require_worker_runtime();
+const route7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: worker_runtime_default
+}, Symbol.toStringTag, { value: "Module" }));
+async function workerLoader({ context }) {
+  const { fetchFromServer } = context;
+  const data = await fetchFromServer().then((response) => response.json());
+  console.log(data);
+  return new Response(JSON.stringify(data), {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+}
+const route8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  workerLoader
+}, Symbol.toStringTag, { value: "Module" }));
+const assets = [
+  "/entry.worker.css",
+  "/entry.worker.js",
+  "/favicon.ico",
+  "/manifest.json"
+];
+const routes = {
+  "root": {
+    id: "root",
+    parentId: void 0,
+    path: "",
+    index: void 0,
+    caseSensitive: void 0,
+    hasLoader: false,
+    hasAction: false,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: false,
+    hasWorkerAction: false,
+    module: route0
+  },
+  "routes/basic-action": {
+    id: "routes/basic-action",
+    parentId: "root",
+    path: "basic-action",
+    index: void 0,
+    caseSensitive: void 0,
+    hasLoader: true,
+    hasAction: true,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: false,
+    hasWorkerAction: true,
+    module: route1
+  },
+  "routes/basic-loader": {
+    id: "routes/basic-loader",
+    parentId: "root",
+    path: "basic-loader",
+    index: void 0,
+    caseSensitive: void 0,
+    hasLoader: true,
+    hasAction: false,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: true,
+    hasWorkerAction: false,
+    module: route2
+  },
+  "routes/_app.flights": {
+    id: "routes/_app.flights",
+    parentId: "routes/_app",
+    path: "flights",
+    index: void 0,
+    caseSensitive: void 0,
+    hasLoader: true,
+    hasAction: true,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: true,
+    hasWorkerAction: true,
+    module: route3
+  },
+  "routes/selection": {
+    id: "routes/selection",
+    parentId: "root",
+    path: "selection",
+    index: void 0,
+    caseSensitive: void 0,
+    hasLoader: true,
+    hasAction: false,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: true,
+    hasWorkerAction: false,
+    module: route4
+  },
+  "routes/sync-away": {
+    id: "routes/sync-away",
+    parentId: "root",
+    path: "sync-away",
+    index: void 0,
+    caseSensitive: void 0,
+    hasLoader: false,
+    hasAction: true,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: false,
+    hasWorkerAction: true,
+    module: route5
+  },
+  "routes/_index": {
+    id: "routes/_index",
+    parentId: "root",
+    path: void 0,
+    index: true,
+    caseSensitive: void 0,
+    hasLoader: true,
+    hasAction: false,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: false,
+    hasWorkerAction: false,
+    module: route6
+  },
+  "routes/push": {
+    id: "routes/push",
+    parentId: "root",
+    path: "push",
+    index: void 0,
+    caseSensitive: void 0,
+    hasLoader: false,
+    hasAction: false,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: false,
+    hasWorkerAction: false,
+    module: route7
+  },
+  "routes/_app": {
+    id: "routes/_app",
+    parentId: "root",
+    path: void 0,
+    index: void 0,
+    caseSensitive: void 0,
+    hasLoader: true,
+    hasAction: false,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: true,
+    hasWorkerAction: false,
+    module: route8
+  }
+};
+const entry = { module: entryWorker };
 var ServerMode;
 (function(ServerMode2) {
   ServerMode2["Development"] = "development";
@@ -5317,7 +5647,7 @@ function isRedirectResponse(response) {
 function isTrackedPromise(value) {
   return value != null && typeof value.then === "function" && value._tracked === true;
 }
-const redirect = (url, init = 302) => {
+const redirect2 = (url, init = 302) => {
   let responseInit = init;
   if (typeof responseInit === "number") {
     responseInit = { status: responseInit };
@@ -5331,7 +5661,7 @@ const redirect = (url, init = 302) => {
     headers
   });
 };
-const json = (data, init = {}) => {
+const json2 = (data, init = {}) => {
   const responseInit = typeof init === "number" ? { status: init } : init;
   const headers = new Headers(responseInit.headers);
   if (!headers.has("Content-Type")) {
@@ -5482,7 +5812,7 @@ function enqueueTrackedPromise(controller, encoder, settledKey, promise, serverM
 }
 async function handleRequest({ defaultHandler: defaultHandler2, errorHandler, event, loadContext, routes: routes2 }) {
   var _a, _b;
-  const isSPAMode = String(true) === "true";
+  const isSPAMode = String(false) === "true";
   const isSingleFetchMode = String(false) === "true";
   const url = new URL(event.request.url);
   let routeId;
@@ -5532,7 +5862,7 @@ async function handleLoader({ event, loadContext, loader, routeId, routePath }) 
   }
   if (isDeferredData(result)) {
     if (result.init && isRedirectStatusCode(result.init.status || 200)) {
-      return redirect(new Headers(result.init.headers).get("Location"), result.init);
+      return redirect2(new Headers(result.init.headers).get("Location"), result.init);
     }
     const body = createDeferredReadableStream(result, event.request.signal, ServerMode.Production);
     const init = result.init || {};
@@ -5541,7 +5871,7 @@ async function handleLoader({ event, loadContext, loader, routeId, routePath }) 
     init.headers = headers;
     return new Response(body, init);
   }
-  return isResponse(result) ? result : json(result);
+  return isResponse(result) ? result : json2(result);
 }
 async function handleAction({ action, event, loadContext, routeId, routePath }) {
   const _arguments = createArgumentsFrom({ event, loadContext, path: routePath });
@@ -5549,7 +5879,7 @@ async function handleAction({ action, event, loadContext, routeId, routePath }) 
   if (result === void 0) {
     throw new Error(`You defined an action for route "${routeId}" but didn't return anything from your \`worker action\` function. Please return a value or \`null\`.`);
   }
-  return isResponse(result) ? result : json(result);
+  return isResponse(result) ? result : json2(result);
 }
 function _errorHandler({ error, handler: handleError }) {
   if (isResponse(error)) {
@@ -5562,7 +5892,7 @@ function _errorHandler({ error, handler: handleError }) {
   }
   const errorInstance = error instanceof Error ? error : new Error("Unexpected Server Error");
   handleError(errorInstance);
-  return json({ message: errorInstance.message }, {
+  return json2({ message: errorInstance.message }, {
     status: 500,
     headers: {
       "X-Remix-Error": "yes"

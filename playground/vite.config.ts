@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import { installGlobals } from "@remix-run/node";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { remixPWA } from '@remix-pwa/dev';
+import { remixDevTools } from "remix-development-tools";
 
 installGlobals();
 
@@ -10,6 +11,7 @@ const spaMode = process.env.SPA === 'true' || false;
 
 export default defineConfig({
   plugins: [
+    remixDevTools(),
     remix({
       ignoredRouteFiles: ["**/.*"],
       appDirectory: spaMode ? './spa' : './app',
