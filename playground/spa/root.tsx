@@ -7,6 +7,8 @@ import {
 } from "@remix-run/react";
 import { installPWAGlobals } from "@remix-pwa/sw";
 
+import './tailwind.css';
+
 export function Layout({ children }: { children: React.ReactNode }) {
   installPWAGlobals()
 

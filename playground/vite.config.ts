@@ -6,7 +6,7 @@ import { remixPWA } from '@remix-pwa/dev';
 
 installGlobals();
 
-const spaMode = true;
+const spaMode = process.env.SPA === 'true' || false;
 
 export default defineConfig({
   plugins: [
@@ -28,6 +28,12 @@ export default defineConfig({
       // workerEntryPoint: './runtime.js'
     }),
   ],
+  resolve: {
+    alias: {
+      '~/*': './app/*',
+      '@/*': './spa/*',
+    },
+  },
   server: {
     port: 3_000,
   }

@@ -19,12 +19,14 @@
   "scripts": {
     "build": "turbo build",
     "commit": "commit",
-    "dev": "npm run dev --workspace @remix-pwa/playground",
+    "dev:ssr": "npm run dev:ssr --workspace @remix-pwa/playground",
+    "dev:spa": "npm run dev:spa --workspace @remix-pwa/playground",
     "lint-staged": "lint-staged",
     "lint": "turbo lint -- --fix",
     "format": "turbo format -- --write",
     "postclone": "npm run preinstall -w @remix-pwa/playground && npm install && npm run test && npm run build",
     "publish:pr": "npx pkg-pr-new publish './packages/*'",
+    "sandbox": "npm run build && npm run preinstall -w @remix-pwa/playground",
     "test": "turbo test -- --coverage"
   },
   "devDependencies": {
