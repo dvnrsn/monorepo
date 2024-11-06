@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 
 import { messageSW } from './utils.js';
 
-function matchUrlToRoute(url: string, manifest: RouteManifest<EntryRoute>): string | null {
+export function matchUrlToRoute(url: string, manifest: RouteManifest<EntryRoute>): string | null {
   const { pathname, searchParams } = new URL(url, window.location.origin);
   const isIndex = searchParams.has('index');
 
