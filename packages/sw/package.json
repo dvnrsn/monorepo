@@ -16,13 +16,33 @@
       "default": "./dist/src/cache/index.js",
       "types": "./dist/src/cache/index.d.ts"
     },
+    "./enhanced-cache": {
+      "default": "./dist/src/cache/EnhancedCache.js",
+      "types": "./dist/src/cache/EnhancedCache.d.ts"
+    },
+    "./pwa-scripts": {
+      "default": "./dist/src/components/PWAScripts.js",
+      "types": "./dist/src/components/PWAScripts.d.ts"
+    },
     "./logger": {
-      "default": "./dist/src/logger/index.js",
-      "types": "./dist/src/logger/index.d.ts"
+      "default": "./dist/src/logger/logger.js",
+      "types": "./dist/src/logger/logger.d.ts"
     },
     "./message": {
       "default": "./dist/src/message/index.js",
       "types": "./dist/src/message/index.d.ts"
+    },
+    "./navigation-handler": {
+      "default": "./dist/src/message/NavigationHandler.js",
+      "types": "./dist/src/message/NavigationHandler.d.ts"
+    },
+    "./utils": {
+      "default": "./dist/src/utils/index.js",
+      "types": "./dist/src/utils/index.d.ts"
+    },
+    "./install-pwa-globals": {
+      "default": "./dist/src/utils/installPWAGlobals.js",
+      "types": "./dist/src/utils/installPWAGlobals.d.ts"
     },
     "./types": {
       "types": "./dist/src/types.d.ts"
@@ -33,11 +53,26 @@
       "cache": [
         "./dist/src/cache/index.d.ts"
       ],
+      "enhanced-cache": [
+        "./dist/src/cache/EnhancedCache.d.ts"
+      ],
+      "pwa-scripts": [
+        "./dist/src/components/PWAScripts.d.ts"
+      ],
       "logger": [
         "./dist/src/logger/index.d.ts"
       ],
       "message": [
         "./dist/src/message/index.d.ts"
+      ],
+      "navigation-handler": [
+        "./dist/src/message/NavigationHandler.d.ts"
+      ],
+      "utils": [
+        "./dist/src/utils/index.d.ts"
+      ],
+      "install-pwa-globals": [
+        "./dist/src/utils/installPWAGlobals.d.ts"
       ],
       "types": [
         "./dist/src/types.d.ts"
