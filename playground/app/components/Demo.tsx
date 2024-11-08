@@ -44,7 +44,7 @@ export const DemoPlayground = ({ children }: DemoPlaygroundProps) => {
       }
       className="w-full"
     >
-      <TabsList className="grid w-full grid-cols-1 md:grid-cols-5">
+      <TabsList className={cn("grid w-full h-full grid-cols-1", Children.count(children) > 4 ? 'md:grid-cols-4' : `md:grid-cols-${Children.count(children)}`)}>
         {Children.map(children, (child) => (
           isValidElement(child) ? (
             <TabsTrigger value={simpleSlugify(child.props.name)}>{child.props.name}</TabsTrigger>
@@ -54,7 +54,7 @@ export const DemoPlayground = ({ children }: DemoPlaygroundProps) => {
       <TabsContent value="code">{children}</TabsContent>
       {Children.map(children, (child) => (
         isValidElement(child) ? (
-          <TabsContent value={simpleSlugify(child.props.name)}>{child}</TabsContent>
+          <TabsContent value={simpleSlugify(child.props.name)} className="pt-1">{child}</TabsContent>
         ) : null
         ))}
       </Tabs>

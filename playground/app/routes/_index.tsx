@@ -104,7 +104,7 @@ export default function Index() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <header className="max-w-7xl mx-auto w-full sticky top-0 z-50 flex justify-between items-center shadow-foreground/10 text-foreground">
+      <header className="max-w-7xl mx-auto w-full z-50 flex justify-between items-center shadow-foreground/10 text-foreground">
         <h2 className="text-2xl font-bold py-4">📦 Sandbox</h2>
         {/* Theme Toggle */}
         <div className="py-4 flex justify-end">
