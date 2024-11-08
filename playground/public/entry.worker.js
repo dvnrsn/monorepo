@@ -1,13 +1,13 @@
-var __defProp$8 = Object.defineProperty;
-var __defNormalProp$8 = (obj, key, value) => key in obj ? __defProp$8(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$8 = (obj, key, value) => {
-  __defNormalProp$8(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$5 = Object.defineProperty;
+var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$5 = (obj, key, value) => {
+  __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
 const _Logger = class _Logger2 {
   constructor(o) {
-    __publicField$8(this, "options");
-    __publicField$8(this, "inGroup", false);
+    __publicField$5(this, "options");
+    __publicField$5(this, "inGroup", false);
     this.options = { ..._Logger2.defaultOptions, ...o };
   }
   setLogLevel(o) {
@@ -52,105 +52,21 @@ const _Logger = class _Logger2 {
     return i.indexOf(o) >= i.indexOf(r);
   }
 };
-__publicField$8(_Logger, "defaultOptions", { prefix: "remix-pwa", styles: { debug: { background: "#7f8c8d", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, info: { background: "#3498db", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, log: { background: "#2ecc71", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, warn: { background: "#f39c12", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, error: { background: "#c0392b", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, groupCollapsed: { background: "#3498db", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, groupEnd: { background: null, color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" } }, logLevel: "debug", isProductionEnv: false });
+__publicField$5(_Logger, "defaultOptions", { prefix: "remix-pwa", styles: { debug: { background: "#7f8c8d", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, info: { background: "#3498db", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, log: { background: "#2ecc71", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, warn: { background: "#f39c12", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, error: { background: "#c0392b", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, groupCollapsed: { background: "#3498db", color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" }, groupEnd: { background: null, color: "white", "border-radius": "0.5em", "font-weight": "bold", padding: "2px 0.5em" } }, logLevel: "debug", isProductionEnv: false });
 let Logger = _Logger;
 const logger = new Logger();
-var __defProp$7 = Object.defineProperty;
-var __defNormalProp$7 = (obj, key, value) => key in obj ? __defProp$7(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$7 = (obj, key, value) => {
-  __defNormalProp$7(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-const _MessageHandler = class _MessageHandler2 {
-  constructor(e) {
-    __publicField$7(this, "eventName");
-    this.eventName = e;
-  }
-  bind(e) {
-    _MessageHandler2.messageHandlers[this.eventName] = e;
-  }
-  async handleMessage(e) {
-    const { data: s } = e;
-    if ("object" == typeof s && s.type && _MessageHandler2.messageHandlers[s.type])
-      try {
-        await _MessageHandler2.messageHandlers[s.type](e);
-      } catch (e2) {
-        logger.error(`Error handling message of type ${s.type}:`, e2);
-      }
-  }
-};
-__publicField$7(_MessageHandler, "messageHandlers", {});
-let MessageHandler = _MessageHandler;
-var __defProp$6 = Object.defineProperty;
-var __defNormalProp$6 = (obj, key, value) => key in obj ? __defProp$6(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$6 = (obj, key, value) => {
-  __defNormalProp$6(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-class NavigationHandler extends MessageHandler {
-  constructor(e) {
-    super("REMIX_NAVIGATION_UPDATE");
-    __publicField$6(this, "allowList");
-    __publicField$6(this, "denyList");
-    __publicField$6(this, "documentCache");
-    __publicField$6(this, "logger");
-    this.allowList = e.allowList || [], this.denyList = e.denyList || [], this.documentCache = e.cache, this.logger = e.logger || logger, this.bind(this.handleNavigation.bind(this));
-  }
-  async _precacheDocuments() {
-    try {
-      this.logger.log("Precaching documents...");
-      const e = [];
-      for (const t of e) {
-        if (!await this.documentCache.match(t)) {
-          const e2 = await fetch(t);
-          e2.ok ? (await this.documentCache.addToCache(t, e2.clone()), this.logger.log(`Precached document: ${t} successfully`)) : this.logger.warn(`Failed to precache document: ${t}`);
-        }
-      }
-    } catch (e) {
-      this.logger.error("Error precaching documents:", e);
-    }
-  }
-  async handleNavigation(e) {
-    console.log("Invoked message recieve");
-    const { data: t } = e, { location: o } = t.payload, a = o.pathname + o.search + o.hash;
-    if (!(this.allowList.length > 0 && !this.allowList.some((e2) => a.match(e2)) || this.denyList.length > 0 && this.denyList.some((e2) => a.match(e2))))
-      try {
-        if (!await this.documentCache.match(a) && "CacheOnly" !== this.documentCache.strategy.constructor.name) {
-          this.logger.debug(`Document request for ${a} not found in cache. Fetching from server...`);
-          const e2 = await fetch(a).catch((e3) => {
-            this.logger.error(`Error fetching document for ${a}:`, e3);
-          });
-          if (!e2)
-            return;
-          return await this.documentCache.addToCache(a, e2.clone());
-        }
-      } catch (e2) {
-        this.logger.error(`Error handling document request for ${a}:`, e2);
-      }
-  }
-}
-function isMethod$1(t, e) {
-  return e.includes(t.method.toLowerCase());
-}
-function isLoaderRequest$1(t) {
-  const e = new URL(t.url);
-  return isMethod$1(t, ["get"]) && e.searchParams.get("_data");
-}
-function isDocumentRequest(t) {
-  return isMethod$1(t, ["get"]) && "navigate" === t.mode;
-}
 const isHttpRequest = (t) => t instanceof Request ? t.url.startsWith("http") : t.toString().startsWith("http");
-var __defProp$5 = Object.defineProperty;
-var __defNormalProp$5 = (obj, key, value) => key in obj ? __defProp$5(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$5 = (obj, key, value) => {
-  __defNormalProp$5(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$4 = Object.defineProperty;
+var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$4 = (obj, key, value) => {
+  __defNormalProp$4(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
 const CACHE_TIMESTAMP_HEADER = "sw-cache-timestamp";
 class BaseStrategy {
   constructor(e, t = { maxEntries: 50, matchOptions: {} }) {
-    __publicField$5(this, "cacheName");
-    __publicField$5(this, "options");
+    __publicField$4(this, "cacheName");
+    __publicField$4(this, "options");
     this.cacheName = e, this.options = { matchOptions: {}, ...t };
   }
   async openCache() {
@@ -189,16 +105,16 @@ function mergeHeaders(...e) {
         r.set(e2, o);
   return r;
 }
-var __defProp$4 = Object.defineProperty;
-var __defNormalProp$4 = (obj, key, value) => key in obj ? __defProp$4(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$4 = (obj, key, value) => {
-  __defNormalProp$4(obj, key + "", value);
+var __defProp$3 = Object.defineProperty;
+var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$3 = (obj, key, value) => {
+  __defNormalProp$3(obj, key + "", value);
   return value;
 };
 class CacheFirst extends BaseStrategy {
   constructor(e, t = {}) {
     super(e, t);
-    __publicField$4(this, "cacheableResponse");
+    __publicField$3(this, "cacheableResponse");
     this.cacheableResponse = t.cacheableResponse ?? false;
   }
   async handleRequest(e) {
@@ -4642,17 +4558,17 @@ const { Deflate, deflate, deflateRaw, gzip } = deflate_1$1;
 const { Inflate, inflate, inflateRaw, ungzip } = inflate_1$1;
 var gzip_1 = gzip;
 var ungzip_1 = ungzip;
-var __defProp$3 = Object.defineProperty;
-var __defNormalProp$3 = (obj, key, value) => key in obj ? __defProp$3(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$3 = (obj, key, value) => {
-  __defNormalProp$3(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp$2 = Object.defineProperty;
+var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$2 = (obj, key, value) => {
+  __defNormalProp$2(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
 class NetworkFirst extends BaseStrategy {
   constructor(e, t = {}) {
     super(e, t);
-    __publicField$3(this, "networkTimeoutSeconds");
-    __publicField$3(this, "cacheableResponse");
+    __publicField$2(this, "networkTimeoutSeconds");
+    __publicField$2(this, "cacheableResponse");
     this.networkTimeoutSeconds = t.networkTimeoutInSeconds ?? 10, this.cacheableResponse = t.cacheableResponse ?? false;
   }
   async handleRequest(e) {
@@ -4686,16 +4602,16 @@ class NetworkFirst extends BaseStrategy {
     return s ? Promise.race([fetch(e), s]) : fetch(e);
   }
 }
-var __defProp$2 = Object.defineProperty;
-var __defNormalProp$2 = (obj, key, value) => key in obj ? __defProp$2(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$2 = (obj, key, value) => {
-  __defNormalProp$2(obj, key + "", value);
+var __defProp$1 = Object.defineProperty;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$1 = (obj, key, value) => {
+  __defNormalProp$1(obj, key + "", value);
   return value;
 };
 class StaleWhileRevalidate extends BaseStrategy {
   constructor(e, t = {}) {
     super(e, t);
-    __publicField$2(this, "inProgressRequests", /* @__PURE__ */ new Map());
+    __publicField$1(this, "inProgressRequests", /* @__PURE__ */ new Map());
   }
   async handleRequest(e) {
     const t = this.ensureRequest(e);
@@ -4722,18 +4638,18 @@ class StaleWhileRevalidate extends BaseStrategy {
     return s.put(e, a.clone()), await this.cleanupCache(), a;
   }
 }
-var __defProp$1 = Object.defineProperty;
-var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField$1 = (obj, key, value) => {
-  __defNormalProp$1(obj, typeof key !== "symbol" ? key + "" : key, value);
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
 class EnhancedCache {
   constructor(e, t = {}) {
-    __publicField$1(this, "cacheName");
-    __publicField$1(this, "strategy");
-    __publicField$1(this, "cacheHits", 0);
-    __publicField$1(this, "totalRequests", 0);
+    __publicField(this, "cacheName");
+    __publicField(this, "strategy");
+    __publicField(this, "cacheHits", 0);
+    __publicField(this, "totalRequests", 0);
     this.cacheName = `${e}-${t.version || "v1"}`, this.strategy = this.selectStrategy(t.strategy, t.strategyOptions);
   }
   selectStrategy(e, t) {
@@ -4852,94 +4768,6 @@ class EnhancedCache {
     await s.done;
   }
 }
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-class PushManager {
-  constructor(options = {}) {
-    __publicField(this, "_handlePushEvent");
-    __publicField(this, "_handleNotificationClick");
-    __publicField(this, "_handleNotificationClose");
-    __publicField(this, "_handleNotificationError");
-    this._handlePushEvent = options.handlePushEvent || this.handlePushEvent;
-    this._handleNotificationClick = options.handleNotificationClick || this.handleNotificationClick;
-    this._handleNotificationClose = options.handleNotificationClose || this.handleNotificationClose;
-    this._handleNotificationError = options.handleNotificationError || this.handleNotificationError;
-    this.registerListeners();
-  }
-  registerListeners() {
-    self.addEventListener("push", this._handlePushEvent.bind(this));
-    self.addEventListener("notificationclick", this._handleNotificationClick.bind(this));
-    self.addEventListener("notificationclose", this._handleNotificationClose.bind(this));
-    self.addEventListener("notificationerror", this._handleNotificationError.bind(this));
-  }
-  async isClientFocused() {
-    const clientList = await self.clients.matchAll({
-      type: "window",
-      includeUncontrolled: true
-    });
-    return clientList.some((client) => client.focused);
-  }
-  async postMessageToClient(message, all = true) {
-    const clientList = await self.clients.matchAll({
-      type: "window",
-      includeUncontrolled: true
-    });
-    if (all) {
-      clientList.forEach((client) => client.postMessage(message));
-    } else {
-      if (clientList.length > 0) {
-        const client = clientList[0];
-        client.postMessage(message);
-      }
-    }
-  }
-  handlePushEvent(event) {
-    const func = async () => {
-      let data;
-      if (!event.data)
-        return self.registration.showNotification("No data");
-      try {
-        data = event.data.json();
-      } catch (e) {
-        data = event.data.text();
-      }
-      if (typeof data === "string") {
-        return self.registration.showNotification(data);
-      }
-      const { title, ...rest } = data;
-      return self.registration.showNotification(title, {
-        ...rest
-      });
-    };
-    event.waitUntil(func());
-  }
-  handleNotificationClick(event) {
-    event.notification.close();
-    const func = async () => {
-      const clientList = await self.clients.matchAll({
-        type: "window",
-        includeUncontrolled: true
-      });
-      if (clientList.length > 0) {
-        const client = clientList[0];
-        client.focus();
-      } else {
-        self.clients.openWindow("/");
-      }
-    };
-    event.waitUntil(func());
-  }
-  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  handleNotificationClose(_event) {
-  }
-  handleNotificationError(event) {
-    console.error("Notification error:", event);
-  }
-}
 self.logger = logger;
 console.log("Hello from service worker!");
 console.log("development", "https://api.example.com", "value");
@@ -4948,7 +4776,7 @@ const documentCache = new EnhancedCache("document-cache", {
   strategy: "NetworkFirst",
   strategyOptions: {}
 });
-const assetCache = new EnhancedCache("asset-cache", {
+new EnhancedCache("asset-cache", {
   version: "v1",
   strategy: "CacheFirst",
   strategyOptions: {}
@@ -4965,24 +4793,6 @@ const getLoadContext = () => {
     caches: [documentCache, dataCache]
   };
 };
-const isAssetRequest = (request) => {
-  const url = new URL(request.url);
-  const hasNoParams = url.search === "";
-  return self.__workerManifest.assets.includes(url.pathname) && hasNoParams;
-};
-const defaultFetchHandler = async ({ request, context }) => {
-  if (isAssetRequest(request)) {
-    return assetCache.handleRequest(request);
-  }
-  if (isDocumentRequest(request)) {
-    return documentCache.handleRequest(request);
-  }
-  const url = new URL(context.event.request.url);
-  if (isLoaderRequest$1(request) && self.__workerManifest.routes[url.searchParams.get("_data") ?? ""].hasLoader) {
-    return dataCache.handleRequest(request);
-  }
-  return context.fetchFromServer();
-};
 self.addEventListener("install", (event) => {
   logger.log("installing service worker");
   logger.warn("This is a playground service worker 📦. It is not intended for production use.");
@@ -4991,17 +4801,31 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(self.clients.claim());
 });
-const msgHandler = new NavigationHandler({
-  cache: documentCache
-});
-self.addEventListener("message", async (event) => {
-  await msgHandler.handleMessage(event);
-});
-new PushManager();
 const entryWorker = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  defaultFetchHandler,
   getLoadContext
+}, Symbol.toStringTag, { value: "Module" }));
+var __getOwnPropNames$3 = Object.getOwnPropertyNames;
+var __esm$3 = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames$3(fn)[0]])(fn = 0)), res;
+};
+var __commonJS$3 = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames$3(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var init_define_process_env$3 = __esm$3({
+  "<define:process.env>"() {
+  }
+});
+var require_worker_runtime$3 = __commonJS$3({
+  "@remix-pwa/worker-runtime"(exports, module) {
+    init_define_process_env$3();
+    module.exports = {};
+  }
+});
+var worker_runtime_default$3 = require_worker_runtime$3();
+const route0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: worker_runtime_default$3
 }, Symbol.toStringTag, { value: "Module" }));
 var __getOwnPropNames$2 = Object.getOwnPropertyNames;
 var __esm$2 = (fn, res) => function __init() {
@@ -5021,7 +4845,7 @@ var require_worker_runtime$2 = __commonJS$2({
   }
 });
 var worker_runtime_default$2 = require_worker_runtime$2();
-const route0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -5042,7 +4866,7 @@ const workerAction$2 = async ({ context }) => {
     }
   });
 };
-const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   workerAction: workerAction$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -5064,7 +4888,7 @@ async function workerLoader$3({ context }) {
     }
   );
 }
-const route2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   workerLoader: workerLoader$3
 }, Symbol.toStringTag, { value: "Module" }));
@@ -5398,7 +5222,7 @@ const workerLoader$2 = async ({ context }) => {
     throw json$1({ message: "Something went wrong", error }, 500);
   }
 };
-const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   workerAction: workerAction$1,
   workerLoader: workerLoader$2
@@ -5408,7 +5232,7 @@ async function workerLoader$1({ context }) {
   const selections = await database.selections.toArray();
   return json$1({ selections });
 }
-const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   workerLoader: workerLoader$1
 }, Symbol.toStringTag, { value: "Module" }));
@@ -5427,7 +5251,7 @@ const workerAction = async ({ context }) => {
     }
   });
 };
-const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   workerAction
 }, Symbol.toStringTag, { value: "Module" }));
@@ -5449,7 +5273,7 @@ var require_worker_runtime$1 = __commonJS$1({
   }
 });
 var worker_runtime_default$1 = require_worker_runtime$1();
-const route6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default$1
 }, Symbol.toStringTag, { value: "Module" }));
@@ -5471,7 +5295,7 @@ var require_worker_runtime = __commonJS({
   }
 });
 var worker_runtime_default = require_worker_runtime();
-const route7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: worker_runtime_default
 }, Symbol.toStringTag, { value: "Module" }));
@@ -5485,7 +5309,7 @@ async function workerLoader({ context }) {
     }
   });
 }
-const route8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   workerLoader
 }, Symbol.toStringTag, { value: "Module" }));
@@ -5510,6 +5334,20 @@ const routes = {
     hasWorkerAction: false,
     module: route0
   },
+  "routes/_route.worker-modules": {
+    id: "routes/_route.worker-modules",
+    parentId: "root",
+    path: "worker-modules",
+    index: void 0,
+    caseSensitive: void 0,
+    hasLoader: false,
+    hasAction: false,
+    hasClientLoader: false,
+    hasClientAction: false,
+    hasWorkerLoader: false,
+    hasWorkerAction: false,
+    module: route1
+  },
   "routes/basic-action": {
     id: "routes/basic-action",
     parentId: "root",
@@ -5522,7 +5360,7 @@ const routes = {
     hasClientAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: true,
-    module: route1
+    module: route2
   },
   "routes/basic-loader": {
     id: "routes/basic-loader",
@@ -5536,7 +5374,7 @@ const routes = {
     hasClientAction: false,
     hasWorkerLoader: true,
     hasWorkerAction: false,
-    module: route2
+    module: route3
   },
   "routes/_app.flights": {
     id: "routes/_app.flights",
@@ -5550,7 +5388,7 @@ const routes = {
     hasClientAction: false,
     hasWorkerLoader: true,
     hasWorkerAction: true,
-    module: route3
+    module: route4
   },
   "routes/selection": {
     id: "routes/selection",
@@ -5564,7 +5402,7 @@ const routes = {
     hasClientAction: false,
     hasWorkerLoader: true,
     hasWorkerAction: false,
-    module: route4
+    module: route5
   },
   "routes/sync-away": {
     id: "routes/sync-away",
@@ -5578,7 +5416,7 @@ const routes = {
     hasClientAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: true,
-    module: route5
+    module: route6
   },
   "routes/_index": {
     id: "routes/_index",
@@ -5592,7 +5430,7 @@ const routes = {
     hasClientAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: false,
-    module: route6
+    module: route7
   },
   "routes/push": {
     id: "routes/push",
@@ -5606,7 +5444,7 @@ const routes = {
     hasClientAction: false,
     hasWorkerLoader: false,
     hasWorkerAction: false,
-    module: route7
+    module: route8
   },
   "routes/_app": {
     id: "routes/_app",
@@ -5620,7 +5458,7 @@ const routes = {
     hasClientAction: false,
     hasWorkerLoader: true,
     hasWorkerAction: false,
-    module: route8
+    module: route9
   }
 };
 const entry = { module: entryWorker };

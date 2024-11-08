@@ -1,7 +1,6 @@
 /// <reference lib="WebWorker" />
 
-import { EnhancedCache, isDocumentRequest, isLoaderRequest, logger, NavigationHandler } from '@remix-pwa/sw';
-import { PushManager } from '@remix-pwa/push/client';
+import { EnhancedCache, logger } from '@remix-pwa/sw';
 
 declare let self: ServiceWorkerGlobalScope;
 
@@ -52,26 +51,26 @@ const isAssetRequest = (request: Request)=> {
   return self.__workerManifest.assets.includes(url.pathname) && hasNoParams;
 }
 
-export const defaultFetchHandler = async ({ request, context }: any) => {
-  if (isAssetRequest(request)) {
-    return assetCache.handleRequest(request);
-  }
+// export const defaultFetchHandler = async ({ request, context }: any) => {
+//   if (isAssetRequest(request)) {
+//     return assetCache.handleRequest(request);
+//   }
 
-  if (isDocumentRequest(request)) {
-    return documentCache.handleRequest(request);
-  }
+//   if (isDocumentRequest(request)) {
+//     return documentCache.handleRequest(request);
+//   }
 
-  const url = new URL(context.event.request.url);
+//   const url = new URL(context.event.request.url);
 
-  // If it is loader request, and there's no worker route API for it,
-  // we have to run it ourselves
-  if (isLoaderRequest(request) && self.__workerManifest.routes[url.searchParams.get('_data') ?? ''].hasLoader) {
-    return dataCache.handleRequest(request);
-  }
+//   // If it is loader request, and there's no worker route API for it,
+//   // we have to run it ourselves
+//   if (isLoaderRequest(request) && self.__workerManifest.routes[url.searchParams.get('_data') ?? ''].hasLoader) {
+//     return dataCache.handleRequest(request);
+//   }
 
-  // logger.log('default handler');
-  return context.fetchFromServer();
-}
+//   // logger.log('default handler');
+//   return context.fetchFromServer();
+// }
 
 self.addEventListener('install', (event: ExtendableEvent) => {
   logger.log('installing service worker');
@@ -82,13 +81,3 @@ self.addEventListener('install', (event: ExtendableEvent) => {
 self.addEventListener('activate', event => {
   event.waitUntil(self.clients.claim());
 });
-
-const msgHandler = new NavigationHandler({
-  cache: documentCache,
-})
-
-self.addEventListener('message', async event => {
-  await msgHandler.handleMessage(event);
-})
-
-new PushManager()

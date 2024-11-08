@@ -10,14 +10,10 @@ import {
 } from "@remix-run/react";
 import { usePWAManager } from "@remix-pwa/client";
 import { ManifestLink } from "@remix-pwa/manifest";
-// import { msg } from "virtual:sw"
-// import { routes } from 'virtual:pwa-entry-module';
 
 import './tailwind.css';
 import { useLocalStorage } from "usehooks-ts";
 import { cn } from "./lib/utils";
-import { Button } from "./components/ui/button";
-import { Moon, Sun } from "lucide-react";
 
 // const usePWAHMR = () => {
 //   const [currentHash, setCurrentHash] = useState<string | null>(null);
@@ -47,17 +43,7 @@ import { Moon, Sun } from "lucide-react";
 
 export default function App() {
   installPWAGlobals()
-  const { updateAvailable } = usePWAManager();
-  const [theme, setTheme] = useLocalStorage("theme", "light");
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  }
-
-  // logger.log("App rendered", msg);
-  // useEffect(() => {
-  //   console.log(updateAvailable);
-  // }, [updateAvailable]);
+  const [theme,] = useLocalStorage("theme", "light");
 
   return (
     <html lang="en">
@@ -86,20 +72,6 @@ export default function App() {
         />
       </head>
       <body className={cn("min-h-screen bg-background transition-colors duration-300", theme)}>
-        <header className="max-w-7xl mx-auto w-full sticky top-0 z-50 flex justify-between items-center shadow-foreground/10 text-foreground">
-          <h2 className="text-2xl font-bold py-4">📦 Sandbox</h2>
-          {/* Theme Toggle */}
-          <div className="py-4 flex justify-end">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={toggleTheme}
-              aria-label={theme === "dark" ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {theme === "dark" ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
-            </Button>
-          </div>
-        </header>
         <Outlet />
         <ScrollRestoration />
         <Scripts />

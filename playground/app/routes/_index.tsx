@@ -2,7 +2,8 @@ import { usePWAManager } from "@remix-pwa/client";
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link } from "@remix-run/react";
-import { Route, Database, RotateCw, Wifi, LayoutDashboard, Smartphone, Download, Bell, Share2 } from "lucide-react";
+import { Route, Database, RotateCw, Wifi, LayoutDashboard, Smartphone, Download, Bell, Share2, Moon, Sun } from "lucide-react";
+import { useLocalStorage } from "usehooks-ts";
 import { Button } from "~/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "~/components/ui/hover-card";
@@ -22,7 +23,7 @@ const links = [
   {
     title: "Route Worker Modules",
     description: "Learn how to integrate our tools with your app",
-    href: "#",
+    href: "/worker-modules",
     icon: Route,
     gradient: "from-pink-500 via-purple-500 to-pink-500",
     details: "Our comprehensive documentation covers everything from quick starts to advanced topics. Find tutorials, API references, and best practices all in one place."
@@ -95,9 +96,29 @@ const links = [
 
 export default function Index() {
   const { promptInstall } = usePWAManager();
+  const [theme, setTheme] = useLocalStorage("theme", "light");
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  }
 
   return (
     <div className="mx-auto max-w-7xl">
+      <header className="max-w-7xl mx-auto w-full sticky top-0 z-50 flex justify-between items-center shadow-foreground/10 text-foreground">
+        <h2 className="text-2xl font-bold py-4">📦 Sandbox</h2>
+        {/* Theme Toggle */}
+        <div className="py-4 flex justify-end">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {theme === "dark" ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
+          </Button>
+        </div>
+      </header>
+
       <div className="container mx-auto px-4">
         <main className="flex-1">
           <section className="py-20 text-center">
