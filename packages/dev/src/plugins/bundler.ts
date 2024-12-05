@@ -16,9 +16,12 @@ export async function buildWorker(_ctx: PWAPluginContext) {
   const DEFAULT_VARS: Record<string, string | any> = {
     'process.env.NODE_ENV': _ctx.isDev ? 'development' : 'production',
     'process.env.__REMIX_PWA_SPA_MODE': _ctx.__remixPluginContext.remixConfig.ssr ? 'false' : 'true',
-    'process.env.__REMIX_SINGLE_FETCH': _ctx.__remixPluginContext.remixConfig.future.unstable_singleFetch
-      ? 'true'
-      : 'false',
+    'process.env.__REMIX_SINGLE_FETCH':
+      _ctx.__remixPluginContext.remixConfig.future.unstable_singleFetch ||
+      // @ts-expect-error - v3_singleFetch is not typed in pre-2.13.x
+      _ctx.__remixPluginContext.remixConfig.future.v3_singleFetch
+        ? 'true'
+        : 'false',
   };
 
   DEFAULT_VARS['process.env'] = JSON.stringify(
